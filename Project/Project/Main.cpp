@@ -29,7 +29,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	ip.SetImageProcess(CyBuf, CbBuf, CrBuf, YBuf, RBuf, GBuf, BBuf, OutBuf, RGBBuf, IpImg, m_Width, m_Height);
 
-	SelectImageProcessingMethod(23); // Change This Number To Select Method
+	SelectImageProcessingMethod(24); // Change This Number To Select Method
 	getOutputImage(false, false); // False : GrayScale True : RGB / True : Save
 
 	delete[]IpImg, YBuf, RBuf, GBuf, OutBuf, CrBuf, CbBuf, CyBuf;
@@ -134,10 +134,10 @@ void SelectImageProcessingMethod(int select) {
 	case 11:
 		ip.BinaryByHistogram(0.01); break;
 
-	case 12 :
+	case 12:
 		ip.getDiffVideo(); break;
 
-	case 13 : 
+	case 13:
 		ip.getCorrelation(); break;
 
 		/* upper 20 is Theory Range */
@@ -152,5 +152,9 @@ void SelectImageProcessingMethod(int select) {
 
 	case 23:
 		getEntropy(m_Height, m_Width, YBuf); break;
+
+	case 24:
+		JPEG_Encoding(); break;
+
 	}
 }

@@ -1,5 +1,6 @@
 #include "Theory.h"
 #include <math.h>
+#define PI (3.1415)
 
 void NNI(double NNINumber) {
 	int x[10] = { 10,20,30,40,50,60,70,80,90,100 };
@@ -141,4 +142,115 @@ void getEntropy(int m_Height, int m_Width, BYTE* YBuf) {
 
 	sumOfEntropy = -sumOfEntropy;
 	printf("Sum : %f\n", sumOfEntropy);
+}
+
+
+
+
+BYTE grayY[8][8] = { {137, 139, 139, 136, 134, 137, 145, 152 },
+						 {137, 137, 138, 138, 135, 136, 143, 152 },
+						 {137, 139 ,140, 139 ,134, 144, 145, 150 },
+						 {134, 140, 140, 138 ,140, 144, 145, 146},
+						 {137, 139, 141 ,136 ,134, 137, 145, 140 },
+						 {137, 139, 140, 140 ,144, 146, 144, 133},
+						 {140, 140, 142, 146, 148, 143, 134 ,128 },
+						 {142, 139, 139, 145, 149, 143, 132, 128 } };
+
+BYTE QTable[8][8] = { {16, 11, 10, 16, 24, 40, 51, 61 },
+					{12, 12, 14, 19, 26, 58, 60, 55 },
+					 {14, 13 ,16, 24 ,40, 57, 69, 56 },
+					 {14, 17, 22, 29 ,51, 87, 80, 62},
+					 {18, 22, 37 ,56 ,68, 109, 103, 77 },
+					 {23, 35, 55, 64 ,81, 101, 113, 92},
+					 {49, 64, 78, 87, 103, 121, 120 ,101 },
+					 {72, 92, 95, 98, 112, 100, 103, 99 } };
+
+BYTE zigzag[8][8] = {0, 1, 5, 6,14,15,27,28,
+					 2, 4, 7,13,16,26,29,42,
+					 3, 8,12,17,25,30,41,43,
+					 9,11,18,24,31,40,44,53,
+				 	 10,19,23,32,39,45,52,54,
+			 		 20,22,33,38,46,51,55,60,
+					 21,34,37,47,50,56,59,61,
+					 35,36,48,49,57,58,62,63 };
+
+float *DCT;
+
+void calDCT() {
+	int i, j;
+	DCT = new float[8 * 8];
+	float curResult;
+
+	for (i = 0; i < 8; i++) {
+		for (j = 0; j < 8; j++) {
+			curResult = 0;
+
+			for (int k = 0; k < 8; k++) {
+				for (int l = 0; l < 8; l++) {
+					curResult += grayY[k][l] * cos(float((2 * k + 1)*i*PI) / 16) * cos(float((2 * l + 1)*j*PI) / 16);
+				}
+			}
+
+			curResult = curResult / 4;
+
+			*(DCT + (i * 8) + j) = curResult;
+		}
+	}
+
+	for (i = 0; i < 64; i++) {
+
+		if (i % 8 == 0) {
+			printf("\n");
+		}
+
+		printf("%f ", *(DCT + i));
+	}
+}
+
+void quentization() {
+	int i, j;
+	for (i = 0; i < 8; i++) {
+		for (j = 0; j < 8; j++) {
+			*(DCT + (i * 8) + j) = int(*(DCT + (i * 8) + j) / QTable[i][j] + 0.5);
+		}
+	}
+
+	printf("\n");
+
+	for (i = 0; i < 64; i++) {
+
+		if (i % 8 == 0) {
+			printf("\n");
+		}
+
+		printf("%f ", *(DCT + i));
+	}
+
+	printf("\n\n");
+}
+
+void calZigzag() {
+	int i, j;
+	int DCT_coeff_zigzag[64];
+
+	for (i = 0; i < 8; i++) {
+		for (j = 0; j < 8; j++) {
+			BYTE loc = zigzag[i][j];
+
+			DCT_coeff_zigzag[loc] = zigzag[i][j];
+		}
+	}
+
+	for (i = 0; i < 64; i++) {
+		printf("%d ", DCT_coeff_zigzag[i]);
+	}
+	printf("\n\n");
+}
+
+void JPEG_Encoding() {
+	int i, j;
+
+	calDCT();
+	quentization();
+	calZigzag();
 }
