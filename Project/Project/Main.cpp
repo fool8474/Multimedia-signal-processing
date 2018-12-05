@@ -5,50 +5,80 @@
 
 int m_Width = 1280;
 int m_Height = 720;
+// change Size by input Image
 
 BITMAPFILEHEADER hf;
 BITMAPINFOHEADER hInfo;
 BYTE *YBuf, *RBuf, *GBuf, *BBuf, *OutBuf, *RGBBuf, *IpImg, *CrBuf, *CbBuf, *CyBuf;
+BYTE *IpImg2, *RGBBuf2, *YBuf2, *RBuf2, *BBuf2, *GBuf2;
 ImageProcess ip;
-
+const char* targetName;
 
 void SelectImageProcessingMethod(int select);
 void getOutputImage(boolean isRGB, boolean doSave);
+void getInputImage(const char * targetName, BYTE * inputBuf, BYTE * inputR, BYTE * inputG, BYTE * inputB, BYTE * inputY);
+void initializeVariables();
 
 int _tmain(int argc, _TCHAR* argv[]) {
 
-	IpImg  = new BYTE[m_Width * m_Height * 3];
-	RGBBuf = new BYTE[m_Width * m_Height * 3];
-	YBuf   = new BYTE[m_Width * m_Height];
-	RBuf   = new BYTE[m_Width * m_Height];
-	GBuf   = new BYTE[m_Width * m_Height];
-	BBuf   = new BYTE[m_Width * m_Height];
-	OutBuf = new BYTE[m_Width * m_Height];
-	CrBuf  = new BYTE[m_Width * m_Height];
-	CbBuf  = new BYTE[m_Width * m_Height];
-	CyBuf  = new BYTE[m_Width * m_Height];
-
-	const char* targetName = "targetFile.bmp";
-	
-	ImageDataFromBmp((char*)targetName, &RGBBuf, &m_Width, &m_Height, &hf, &hInfo);
-	Bmp2Raw(RGBBuf, m_Width, m_Height);
-	printf("check Image Size = %d %d \n", m_Width, m_Height);
+	initializeVariables();
+	targetName = "targetFile.bmp";
+	getInputImage(targetName, RGBBuf, RBuf, GBuf, BBuf, YBuf);
+	targetName = "move2.bmp";
+	getInputImage(targetName, RGBBuf2, RBuf2, GBuf2, BBuf2, YBuf2);
 
 	ip.SetImageProcess(CyBuf, CbBuf, CrBuf, YBuf, RBuf, GBuf, BBuf, OutBuf, RGBBuf, IpImg, m_Width, m_Height);
-	ip.RGB2GrayScale();
 
-	SelectImageProcessingMethod(22); // Change This Number To Select Method
-	getOutputImage(false, false); // False : GrayScale True : RGB / True : Save
-	
+	SelectImageProcessingMethod(12); // Change This Number To Select Method
+	getOutputImage(false, true); // False : GrayScale True : RGB / True : Save
+
 	delete[]IpImg, YBuf, RBuf, GBuf, OutBuf, CrBuf, CbBuf, CyBuf;
-
-	printf("END \n");
 
 	return 0;
 }
 
+void initializeVariables() {
+	IpImg = new BYTE[m_Width * m_Height * 3];
+	RGBBuf = new BYTE[m_Width * m_Height * 3];
+	YBuf = new BYTE[m_Width * m_Height];
+	RBuf = new BYTE[m_Width * m_Height];
+	GBuf = new BYTE[m_Width * m_Height];
+	BBuf = new BYTE[m_Width * m_Height];
+	OutBuf = new BYTE[m_Width * m_Height];
+	CrBuf = new BYTE[m_Width * m_Height];
+	CbBuf = new BYTE[m_Width * m_Height];
+	CyBuf = new BYTE[m_Width * m_Height];
+
+	IpImg2 = new BYTE[m_Width * m_Height * 3];
+	RGBBuf2 = new BYTE[m_Width * m_Height * 3];
+	YBuf2 = new BYTE[m_Width*m_Height];
+	RBuf2 = new BYTE[m_Width*m_Height];
+	GBuf2 = new BYTE[m_Width*m_Height];
+	BBuf2 = new BYTE[m_Width*m_Height];
+}
+
+void getInputImage(const char * targetName, BYTE * inputBuf, BYTE * inputR, BYTE * inputG, BYTE * inputB, BYTE * inputY) {
+	int i, j;
+
+	ImageDataFromBmp((char*)targetName, &inputBuf, &m_Width, &m_Height, &hf, &hInfo);
+	Bmp2Raw(inputBuf, m_Width, m_Height);
+	printf("check Image Size = %d %d \n", m_Width, m_Height);
+
+	for (i = 0; i < m_Height; i++)
+	{
+		for (j = 0; j < m_Width; j++)
+		{
+			*(inputR + i * m_Width + j) = *(inputBuf + (i)* m_Width * 3 + 3 * (j)+0);
+			*(inputB + i * m_Width + j) = *(inputBuf + (i)* m_Width * 3 + 3 * (j)+1);
+			*(inputG + i * m_Width + j) = *(inputBuf + (i)* m_Width * 3 + 3 * (j)+2);
+			*(inputY + i * m_Width + j) = (*(inputR + i * m_Width + j) + *(inputG + i * m_Width + j) + *(inputB + i * m_Width + j)) / 3;
+			*(OutBuf + i * m_Width + j) = *(inputY + i * m_Width + j);
+		}
+	}
+}
+
 void getOutputImage(boolean isRGB, boolean doSave) {
-	const char * outputName = "22_histogramBinary150.bmp";
+	const char * outputName = "12_getDiffVideo.bmp";
 
 	if (doSave) {
 		if (isRGB) {
@@ -104,6 +134,8 @@ void SelectImageProcessingMethod(int select) {
 	case 11:
 		ip.BinaryByHistogram(0.01); break;
 
+	case 12 :
+		ip.getDiffVideo(); break;
 		/* upper 20 is Theory Range */
 	case 20:
 		NNI(2.7); break;

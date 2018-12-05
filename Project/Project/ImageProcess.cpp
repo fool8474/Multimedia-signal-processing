@@ -265,3 +265,26 @@ void ImageProcess::BinaryByHistogram(double binaryBoundary) {
 		}
 	}
 }
+
+void ImageProcess::getDiffVideo() {
+	for (i = 1; i < m_Height; i++) {
+		for (j = 1; j < m_Width; j++) {
+			int A = *(YBuf + (i)*m_Width + j - 1);
+			int C = *(YBuf + (i-1)*m_Width + j);
+			int x = *(YBuf + (i)*m_Width + j);
+
+			int diff = x - (A + C) / 2;
+			diff += 30;
+
+			if (diff > 255) {
+				diff = 255;
+			}
+
+			else if (diff < 0) {
+				diff = 0;
+			}
+
+			*(OutBuf + i * m_Width + j) = diff;
+		}
+	}
+}
