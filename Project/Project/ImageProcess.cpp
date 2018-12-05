@@ -38,3 +38,33 @@ void ImageProcess::NagativeImage() {
 		}
 	}
 }
+
+void ImageProcess::BrightnessChange(int changeNum) {
+
+	for (i = 0; i < m_Height; i++) {
+		for (j = 0; j < m_Width; j++) {
+			currentY = *(YBuf + i * m_Width + j);
+			changedY = currentY + changeNum;
+
+			if (changedY > 255) changedY = 255;
+			if (changedY < 0) changedY = 0;
+
+			*(OutBuf + i * m_Width + j) = (BYTE)changedY;
+		}
+	}
+}
+
+void ImageProcess::ContrastChange(double changeNum) {
+
+	for (i = 0; i < m_Height; i++) {
+		for (j = 0; j < m_Width; j++) {
+			currentY = *(YBuf + i * m_Width + j);
+			changedY = currentY * changeNum;
+			
+			if (changedY > 255) changedY = 255;
+			if (changedY < 0) changedY = 0;
+
+			*(OutBuf + i * m_Width + j) = (BYTE)changedY;
+		}
+	}
+}

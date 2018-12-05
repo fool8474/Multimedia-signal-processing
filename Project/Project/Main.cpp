@@ -33,11 +33,11 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	ip.SetImageProcess(YBuf, RBuf, GBuf, BBuf, OutBuf, RGBBuf, IpImg, m_Width, m_Height);
 	ip.RGB2GrayScale();
 
-	SelectImageProcessingMethod(0);// 映像を処理する関数を選択
+	SelectImageProcessingMethod(2);
 
 	Y2RGB(OutBuf, IpImg, m_Width, m_Height);
 	Bmp2Raw(IpImg, m_Width, m_Height);
-	const char * outputName = "00_Negative.bmp";
+	const char * outputName = "02_Contrast1_5.bmp";
 	MakeBMPFile_xx((char*)outputName, IpImg, hf, hInfo, m_Width, m_Height);
 
 	delete[]IpImg, YBuf, RBuf, GBuf, OutBuf;
@@ -48,8 +48,16 @@ int _tmain(int argc, _TCHAR* argv[]) {
 void SelectImageProcessingMethod(int select) {
 
 	switch (select) {
-	case 0 :
+	case 0:
 		ip.NagativeImage();
+		break;
+
+	case 1:
+		ip.BrightnessChange(-50);
+		break;
+
+	case 2:
+		ip.ContrastChange(1.5);
 		break;
 	}
 }
