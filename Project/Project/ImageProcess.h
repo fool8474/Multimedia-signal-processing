@@ -32,4 +32,5 @@ public :
 	void GetDiffVideoWith2Image(BYTE* YBuf2);
 	void InputWatermark(BYTE* YBuf2);
 	void ExtractWatermark();
+	void GetIrisRange();
 };

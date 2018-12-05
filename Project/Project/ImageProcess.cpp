@@ -361,3 +361,74 @@ void ImageProcess::ExtractWatermark() {
 		}
 	}
 }
+
+void ImageProcess::GetIrisRange() {
+
+	int curStartX = 240;
+	int curStartY = 240; // this Variable choosed by Image's Iris Center.
+	int curRange = 8; // 8*8
+
+	double curResult = 0;
+	double T = 0;
+	double YSquareAverage = 0;
+	int count = 0;
+
+	while (true) {
+		curResult = 0;
+
+		for (j = curStartY; j < curStartY + curRange; j++) {
+			curResult += *(YBuf + curStartX * m_Width + j);
+			curResult += *(YBuf + (curStartX + curRange) * m_Width + j);
+		}
+
+		for (i = curStartX; i < curStartX + curRange; i++) {
+			curResult += *(YBuf + i * m_Width + curStartY);
+			curResult += *(YBuf + i * m_Width + curStartY + curRange);
+		}
+		//check square's pixels sum which placed edge
+
+		curResult /= (curRange * 4 - 4);
+
+		if (count != 0) {
+			T = curResult - YSquareAverage;
+			if (T < 0) T = -T;
+		}
+
+		else {
+			YSquareAverage = curResult;
+		}
+
+		curRange += 2;
+		curStartX -= 1;
+		curStartY -= 1;
+
+		printf("curResult : %f, curT : %f\n", curResult, T);
+		
+		count += 1;
+
+		if (T > 10) {
+			break;
+		}
+
+		if (count > 200) {
+			break;
+		}
+	}
+
+	// copy YBuf to Outbuf
+	for (i = 0; i < m_Width; i++) {
+		for (j = 0; j < m_Height; j++) {
+			*(OutBuf + i * m_Width + j) = *(YBuf + i * m_Width + j);
+		}
+	}
+
+	// to Draw Iris Edge
+	for (j = curStartY; j < curStartY + curRange; j++) {
+		*(OutBuf + curStartX * m_Width + j) = 255;
+		*(OutBuf + (curStartX + curRange) * m_Width + j) = 255;
+	}
+	for (i = curStartX; i < curStartX + curRange; i++) {
+		*(OutBuf + i * m_Width + curStartY) = 255;
+		*(OutBuf + i * m_Width + curStartY + curRange) = 255;
+	}
+}

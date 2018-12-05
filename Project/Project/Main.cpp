@@ -23,14 +23,14 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	initializeVariables();
 	
-	targetName = "15_getWatermark.bmp";
+	targetName = "IRIS_RGB.bmp";
 	getInputImage(targetName, RGBBuf, RBuf, GBuf, BBuf, YBuf);
 	targetName = "watermark_horse.bmp";
 	getInputImage(targetName, RGBBuf2, RBuf2, GBuf2, BBuf2, YBuf2);
 
 	ip.SetImageProcess(CyBuf, CbBuf, CrBuf, YBuf, RBuf, GBuf, BBuf, OutBuf, RGBBuf, IpImg, m_Width, m_Height);
 
-	SelectImageProcessingMethod(16); // Change This Number To Select Method
+	SelectImageProcessingMethod(17); // Change This Number To Select Method
 	getOutputImage(false, true); // False : GrayScale True : RGB / True : Save
 
 	delete[]IpImg, YBuf, RBuf, GBuf, OutBuf, CrBuf, CbBuf, CyBuf;
@@ -78,7 +78,7 @@ void getInputImage(const char * targetName, BYTE * inputBuf, BYTE * inputR, BYTE
 }
 
 void getOutputImage(boolean isRGB, boolean doSave) {
-	const char * outputName = "16_ExtractedWatermark.bmp";
+	const char * outputName = "17_getIrisEdge.bmp";
 
 	if (doSave) {
 		if (isRGB) {
@@ -148,6 +148,9 @@ void SelectImageProcessingMethod(int select) {
 
 	case 16 :
 		ip.ExtractWatermark(); break;
+
+	case 17 :
+		ip.GetIrisRange(); break;
 
 		/* upper 20 is Theory Range */
 	case 20:
