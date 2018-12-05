@@ -1,6 +1,7 @@
 #include <math.h>
 #include "fileProcess.h"
 #include "ImageProcess.h"
+#include "Theory.h"
 
 int m_Width = 1280;
 int m_Height = 720;
@@ -12,7 +13,7 @@ ImageProcess ip;
 
 
 void SelectImageProcessingMethod(int select);
-void getOutputImage(boolean isRGB);
+void getOutputImage(boolean isRGB, boolean doSave);
 
 int _tmain(int argc, _TCHAR* argv[]) {
 
@@ -36,28 +37,32 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	ip.SetImageProcess(CyBuf, CbBuf, CrBuf, YBuf, RBuf, GBuf, BBuf, OutBuf, RGBBuf, IpImg, m_Width, m_Height);
 	ip.RGB2GrayScale();
 
-	SelectImageProcessingMethod(10); // Change This Number To Select Method
-	getOutputImage(false); // False : GrayScale True : RGB
+	SelectImageProcessingMethod(20); // Change This Number To Select Method
+	getOutputImage(false, false); // False : GrayScale True : RGB / True : Save
 	
 	delete[]IpImg, YBuf, RBuf, GBuf, OutBuf, CrBuf, CbBuf, CyBuf;
 
 	printf("END \n");
+
+	return 0;
 }
 
-void getOutputImage(boolean isRGB) {
+void getOutputImage(boolean isRGB, boolean doSave) {
 	const char * outputName = "10_SobelEdgeDetect150.bmp";
 
-	if (isRGB) {
-		Y2RGB(YBuf, IpImg, m_Width, m_Height);
-		Bmp2Raw(RGBBuf, m_Width, m_Height);
-	}
-	
-	else {
-		Y2RGB(OutBuf, IpImg, m_Width, m_Height);
-		Bmp2Raw(IpImg, m_Width, m_Height);
-	}
+	if (doSave) {
+		if (isRGB) {
+			Y2RGB(YBuf, IpImg, m_Width, m_Height);
+			Bmp2Raw(RGBBuf, m_Width, m_Height);
+		}
 
-	MakeBMPFile_xx((char*)outputName, IpImg, hf, hInfo, m_Width, m_Height);
+		else {
+			Y2RGB(OutBuf, IpImg, m_Width, m_Height);
+			Bmp2Raw(IpImg, m_Width, m_Height);
+		}
+
+		MakeBMPFile_xx((char*)outputName, IpImg, hf, hInfo, m_Width, m_Height);
+	}
 }
 
 void SelectImageProcessingMethod(int select) {
@@ -95,6 +100,10 @@ void SelectImageProcessingMethod(int select) {
 
 	case 10 :
 		ip.ConvSobelEdge(150); break;
+
+	/* upper 20 is Theory Range */
+	case 20:
+		NNI(2.7); break;
 	}
 
 }

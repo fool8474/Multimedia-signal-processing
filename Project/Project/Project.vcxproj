@@ -119,11 +119,13 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="stdfhx.cpp" />
     <ClCompile Include="fileProcess.cpp" />
+    <ClCompile Include="Theory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImageProcess.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="fileProcess.h" />
+    <ClInclude Include="Theory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
