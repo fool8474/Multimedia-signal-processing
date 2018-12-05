@@ -101,3 +101,44 @@ void getStandardDevation() {
 	printf("standardDevation = %f\n", averageSD);
 	double std_dev = sqrt(averageSD);
 }
+
+void getEntropy(int m_Height, int m_Width, BYTE* YBuf) {
+	int i, j;
+	int *histogram = new int[256];
+
+	for (i = 0; i < 256; i++) {
+		*(histogram + i) = 0;
+
+	}
+
+	for (i = 0; i < m_Height; i++) {
+		for (j = 0; j < m_Width; j++) {
+			*(histogram + *(YBuf + i * m_Width + j)) += 1;
+		}
+	}
+
+	float *probability = new float[256];
+	float fullSize = m_Width * m_Height;
+	printf("fullSize = %d\n", &fullSize);
+
+	for (i = 0; i < 256; i++) {
+		*(probability + i) = *(histogram + i) / fullSize;
+		printf("histogram : %d ,", *(histogram + i));
+		printf("probability : %f \n", *(probability + i));
+	}
+
+	float sumOfEntropy = 0;
+	float log;
+
+	for (i = 0; i < 256; i++) {
+
+		float curP = *(probability + i);
+		if (curP != 0) {
+			log = log10(curP) / log10(2.0);
+			sumOfEntropy += curP * log;
+		}
+	}
+
+	sumOfEntropy = -sumOfEntropy;
+	printf("Sum : %f\n", sumOfEntropy);
+}

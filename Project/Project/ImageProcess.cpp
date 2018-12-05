@@ -288,3 +288,29 @@ void ImageProcess::getDiffVideo() {
 		}
 	}
 }
+
+void ImageProcess::getCorrelation() {
+	for (i = 1; i < m_Height; i++) {
+		for (j = 0; j < m_Width; j++) {
+			double rightPix = *(YBuf + i * m_Width + j) / 255.0;
+			double leftPix = *(YBuf + (i - 1) * m_Width + j) / 255.0;
+			double diff = rightPix - leftPix;
+			if (diff < 0) {
+				diff = -diff;
+			}
+			double result = 1 / (1 + diff);
+
+			result *= 255;
+
+			if (result > 255) {
+				result = 255;
+			}
+
+			else if (result < 0) {
+				result = 0;
+			}
+
+			*(OutBuf + i * m_Width + j) = int(result);
+		}
+	}
+}

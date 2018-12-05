@@ -29,8 +29,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	ip.SetImageProcess(CyBuf, CbBuf, CrBuf, YBuf, RBuf, GBuf, BBuf, OutBuf, RGBBuf, IpImg, m_Width, m_Height);
 
-	SelectImageProcessingMethod(12); // Change This Number To Select Method
-	getOutputImage(false, true); // False : GrayScale True : RGB / True : Save
+	SelectImageProcessingMethod(23); // Change This Number To Select Method
+	getOutputImage(false, false); // False : GrayScale True : RGB / True : Save
 
 	delete[]IpImg, YBuf, RBuf, GBuf, OutBuf, CrBuf, CbBuf, CyBuf;
 
@@ -78,7 +78,7 @@ void getInputImage(const char * targetName, BYTE * inputBuf, BYTE * inputR, BYTE
 }
 
 void getOutputImage(boolean isRGB, boolean doSave) {
-	const char * outputName = "12_getDiffVideo.bmp";
+	const char * outputName = "13_getCorrelation.bmp";
 
 	if (doSave) {
 		if (isRGB) {
@@ -136,6 +136,10 @@ void SelectImageProcessingMethod(int select) {
 
 	case 12 :
 		ip.getDiffVideo(); break;
+
+	case 13 : 
+		ip.getCorrelation(); break;
+
 		/* upper 20 is Theory Range */
 	case 20:
 		NNI(2.7); break;
@@ -145,5 +149,8 @@ void SelectImageProcessingMethod(int select) {
 
 	case 22:
 		getStandardDevation(); break;
+
+	case 23:
+		getEntropy(m_Height, m_Width, YBuf); break;
 	}
 }
