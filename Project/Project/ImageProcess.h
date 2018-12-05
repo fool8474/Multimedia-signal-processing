@@ -23,4 +23,8 @@ public :
 	void ToYCbCr();
 	void ConvGradient(double changeNum);
 	void ConvHighPass();
+	void ConvEmbossing();
+	void ConvSobelEdge(int edgePoint);
+	void CalFilter3by3(int filter[3][3]);
+
 };

@@ -36,8 +36,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	ip.SetImageProcess(CyBuf, CbBuf, CrBuf, YBuf, RBuf, GBuf, BBuf, OutBuf, RGBBuf, IpImg, m_Width, m_Height);
 	ip.RGB2GrayScale();
 
-	SelectImageProcessingMethod(8);
-	getOutputImage(false);
+	SelectImageProcessingMethod(10); // Change This Number To Select Method
+	getOutputImage(false); // False : GrayScale True : RGB
 	
 	delete[]IpImg, YBuf, RBuf, GBuf, OutBuf, CrBuf, CbBuf, CyBuf;
 
@@ -45,7 +45,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 }
 
 void getOutputImage(boolean isRGB) {
-	const char * outputName = "08_convHighPass.bmp";
+	const char * outputName = "10_SobelEdgeDetect150.bmp";
 
 	if (isRGB) {
 		Y2RGB(YBuf, IpImg, m_Width, m_Height);
@@ -89,5 +89,12 @@ void SelectImageProcessingMethod(int select) {
 
 	case 8 :
 		ip.ConvHighPass(); break;
+
+	case 9:
+		ip.ConvEmbossing(); break;
+
+	case 10 :
+		ip.ConvSobelEdge(150); break;
 	}
+
 }

@@ -161,17 +161,69 @@ void ImageProcess::ConvGradient(double changeNum) {
 }
 
 void ImageProcess::ConvHighPass() {
-	int HighPass[3][3] = { {-1,-1,-1},{-1,9,-1},{-1,-1,-1} };
+	int highPass[3][3] = { {-1,-1,-1},{-1,9,-1},{-1,-1,-1} };
+	CalFilter3by3(highPass);
+}
+
+void ImageProcess::ConvEmbossing() {
+	int result;
+	int emBoss[3][3] = { {0,0,1},{0,0,0},{-1,0,0} };
+	CalFilter3by3(emBoss);
+	for (i = 0; i < m_Height; i++) {
+		for (j = 0; j < m_Width; j++) {
+			result = *(OutBuf + i * m_Width + j) + 128;
+			if (result > 255) result = 255;
+			*(OutBuf + i * m_Width + j) = result;
+		}
+	}
+}
+
+void ImageProcess::ConvSobelEdge(int edgePoint) {
+	long fx, fy;
+	long sum, edge;
+	int sobelX[3][3] = { {-1,0,1},{-2,0,2},{-1,0,1} };
+	int sobelY[3][3] = { {-1,-2,-1},{0,0,0},{1,2,1} };
+	
+	for (i = 1; i < m_Height - 1; i++) {
+		for (j = 1; j < m_Width - 1; j++) {
+
+			fx = 0; fy = 0;
+
+			for (k = -1; k <= 1; k++) {
+				for (l = -1; l <= 1; l++) {
+					fx += *(YBuf + (i + k)*m_Width + (j + l)) * sobelX[k + 1][l + 1];
+					fy += *(YBuf + (i + k)*m_Width + (j + l)) * sobelY[k + 1][l + 1];
+				}
+			}
+
+			fx *= fx;
+			fy *= fy;
+
+			sum = abs(fx) + abs(fy);
+			edge = sqrt(sum);
+
+			if (edge > edgePoint)
+				edge = 255;
+
+			else
+				edge = 0;
+
+			*(OutBuf + i * m_Width + j) = edge;
+		}
+	}
+}
+
+void ImageProcess::CalFilter3by3(int filter[3][3]) {
 	int result;
 
-	for (i = 1; i < m_Height - 1; i++){
+	for (i = 1; i < m_Height - 1; i++) {
 		for (j = 1; j < m_Width - 1; j++) {
 
 			result = 0;
 
 			for (k = -1; k <= 1; k++) {
 				for (l = -1; l <= 1; l++) {
-					result += *(YBuf + (i + k)*m_Width + (j + l)) * HighPass[k + 1][l + 1];
+					result += *(YBuf + (i + k)*m_Width + (j + l)) * filter[k + 1][l + 1];
 				}
 			}
 
@@ -182,7 +234,6 @@ void ImageProcess::ConvHighPass() {
 				result = 0;
 
 			*(OutBuf + i * m_Width + j) = result;
-
 		}
 	}
 }
