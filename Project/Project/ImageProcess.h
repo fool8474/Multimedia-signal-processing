@@ -17,4 +17,7 @@ public :
 	void NagativeImage();
 	void BrightnessChange(int changeNum);
 	void ContrastChange(double changeNum);
+	void ToBinaryImage(byte dividePoint);
+	void ChangeColorInRange(int xStartPoint, int xEndPoint, int yStartPoint, int yEndPoint, BYTE R, BYTE G, BYTE B);
+
 };

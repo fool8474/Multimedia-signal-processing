@@ -15,7 +15,7 @@ void SelectImageProcessingMethod(int select);
 int _tmain(int argc, _TCHAR* argv[]) {
 	int i, j, k, l;
 
-	IpImg = new BYTE[m_Width * m_Height * 3];
+	IpImg  = new BYTE[m_Width * m_Height * 3];
 	RGBBuf = new BYTE[m_Width * m_Height * 3];
 
 	YBuf   = new BYTE[m_Width * m_Height];
@@ -33,31 +33,42 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	ip.SetImageProcess(YBuf, RBuf, GBuf, BBuf, OutBuf, RGBBuf, IpImg, m_Width, m_Height);
 	ip.RGB2GrayScale();
 
-	SelectImageProcessingMethod(2);
+	SelectImageProcessingMethod(4);
 
+	const char * outputName = "04_changeColor.bmp";
+
+	/*RGB Save Case*/
+	/*Y2RGB(YBuf, IpImg, m_Width, m_Height) ;
+	Bmp2Raw(RGBBuf, m_Width, m_Height) ; //  m_Width, m_Height) ;
+	MakeBMPFile_xx((char*)outputName, RGBBuf, hf, hInfo, m_Width, m_Height);*/
+
+	/*GrayScale Save Case*/
 	Y2RGB(OutBuf, IpImg, m_Width, m_Height);
 	Bmp2Raw(IpImg, m_Width, m_Height);
-	const char * outputName = "02_Contrast1_5.bmp";
 	MakeBMPFile_xx((char*)outputName, IpImg, hf, hInfo, m_Width, m_Height);
 
 	delete[]IpImg, YBuf, RBuf, GBuf, OutBuf;
 
-	printf(" END \n");
+	printf("END \n");
 }
 
 void SelectImageProcessingMethod(int select) {
 
 	switch (select) {
 	case 0:
-		ip.NagativeImage();
-		break;
+		ip.NagativeImage(); break;
 
 	case 1:
-		ip.BrightnessChange(-50);
-		break;
+		ip.BrightnessChange(-50); break;
 
 	case 2:
-		ip.ContrastChange(1.5);
+		ip.ContrastChange(1.5); break;
+
+	case 3:
+		ip.ToBinaryImage(150); break;
+
+	case 4:
+		ip.ChangeColorInRange(80, 500, 400, 600, 255, 120, 120);
 		break;
 	}
 }

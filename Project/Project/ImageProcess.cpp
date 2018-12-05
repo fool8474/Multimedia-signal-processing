@@ -14,7 +14,6 @@ void ImageProcess :: SetImageProcess(BYTE *IYBuf, BYTE *IRBuf, BYTE *IGBuf, BYTE
 }
 
 void ImageProcess::RGB2GrayScale() {
-	printf("Make GrayScale Image\n");
 	for (i = 0; i < m_Height; i++) {
 		for (j = 0; j < m_Width; j++) {
 			*(RBuf + i * m_Width + j) = *(RGBBuf + (i)* m_Width * 3 + 3 * j + 0);
@@ -65,6 +64,28 @@ void ImageProcess::ContrastChange(double changeNum) {
 			if (changedY < 0) changedY = 0;
 
 			*(OutBuf + i * m_Width + j) = (BYTE)changedY;
+		}
+	}
+}
+
+void ImageProcess :: ToBinaryImage(byte dividePoint) {
+	for (i = 0; i < m_Height; i++) {
+		for (j = 0; j < m_Width; j++) {
+			currentY = *(YBuf + i * m_Width + j);
+			if (currentY > dividePoint) currentY = 255;
+			else currentY = 0;
+
+			*(OutBuf + i * m_Width + j) = currentY;
+		}
+	}
+}
+
+void ImageProcess::ChangeColorInRange(int xStartPoint, int xEndPoint, int yStartPoint, int yEndPoint, BYTE R, BYTE G, BYTE B) {
+	for (i = xStartPoint; i < xEndPoint; i++) {
+		for (j = yStartPoint; j < yEndPoint; j++) {
+			*(RGBBuf + (i)* m_Width * 3 + 3 * (j)+0) = R;
+			*(RGBBuf + (i)* m_Width * 3 + 3 * (j)+1) = G;
+			*(RGBBuf + (i)* m_Width * 3 + 3 * (j)+2) = B;
 		}
 	}
 }
