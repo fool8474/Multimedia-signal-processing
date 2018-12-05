@@ -3,8 +3,8 @@
 #include "ImageProcess.h"
 #include "Theory.h"
 
-int m_Width = 1280;
-int m_Height = 720;
+int m_Width = 512;
+int m_Height = 512;
 // change Size by input Image
 
 BITMAPFILEHEADER hf;
@@ -22,15 +22,16 @@ void initializeVariables();
 int _tmain(int argc, _TCHAR* argv[]) {
 
 	initializeVariables();
-	targetName = "targetFile.bmp";
+	
+	targetName = "15_getWatermark.bmp";
 	getInputImage(targetName, RGBBuf, RBuf, GBuf, BBuf, YBuf);
-	targetName = "move2.bmp";
+	targetName = "watermark_horse.bmp";
 	getInputImage(targetName, RGBBuf2, RBuf2, GBuf2, BBuf2, YBuf2);
 
 	ip.SetImageProcess(CyBuf, CbBuf, CrBuf, YBuf, RBuf, GBuf, BBuf, OutBuf, RGBBuf, IpImg, m_Width, m_Height);
 
-	SelectImageProcessingMethod(24); // Change This Number To Select Method
-	getOutputImage(false, false); // False : GrayScale True : RGB / True : Save
+	SelectImageProcessingMethod(16); // Change This Number To Select Method
+	getOutputImage(false, true); // False : GrayScale True : RGB / True : Save
 
 	delete[]IpImg, YBuf, RBuf, GBuf, OutBuf, CrBuf, CbBuf, CyBuf;
 
@@ -62,7 +63,6 @@ void getInputImage(const char * targetName, BYTE * inputBuf, BYTE * inputR, BYTE
 
 	ImageDataFromBmp((char*)targetName, &inputBuf, &m_Width, &m_Height, &hf, &hInfo);
 	Bmp2Raw(inputBuf, m_Width, m_Height);
-	printf("check Image Size = %d %d \n", m_Width, m_Height);
 
 	for (i = 0; i < m_Height; i++)
 	{
@@ -78,7 +78,7 @@ void getInputImage(const char * targetName, BYTE * inputBuf, BYTE * inputR, BYTE
 }
 
 void getOutputImage(boolean isRGB, boolean doSave) {
-	const char * outputName = "13_getCorrelation.bmp";
+	const char * outputName = "16_ExtractedWatermark.bmp";
 
 	if (doSave) {
 		if (isRGB) {
@@ -135,10 +135,19 @@ void SelectImageProcessingMethod(int select) {
 		ip.BinaryByHistogram(0.01); break;
 
 	case 12:
-		ip.getDiffVideo(); break;
+		ip.GetDiffVideo(); break;
 
 	case 13:
-		ip.getCorrelation(); break;
+		ip.GetCorrelation(); break;
+
+	case 14:
+		ip.GetDiffVideoWith2Image(YBuf2); break;
+
+	case 15 :
+		ip.InputWatermark(YBuf2); break;
+
+	case 16 :
+		ip.ExtractWatermark(); break;
 
 		/* upper 20 is Theory Range */
 	case 20:
@@ -155,6 +164,5 @@ void SelectImageProcessingMethod(int select) {
 
 	case 24:
 		JPEG_Encoding(); break;
-
 	}
 }

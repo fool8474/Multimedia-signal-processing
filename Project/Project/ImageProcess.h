@@ -27,6 +27,9 @@ public :
 	void ConvSobelEdge(int edgePoint);
 	void CalFilter3by3(int filter[3][3]);
 	void BinaryByHistogram(double binaryBoundary);
-	void getDiffVideo();
-	void getCorrelation();
+	void GetDiffVideo();
+	void GetCorrelation();
+	void GetDiffVideoWith2Image(BYTE* YBuf2);
+	void InputWatermark(BYTE* YBuf2);
+	void ExtractWatermark();
 };

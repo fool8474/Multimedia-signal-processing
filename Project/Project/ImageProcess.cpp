@@ -266,7 +266,7 @@ void ImageProcess::BinaryByHistogram(double binaryBoundary) {
 	}
 }
 
-void ImageProcess::getDiffVideo() {
+void ImageProcess::GetDiffVideo() {
 	for (i = 1; i < m_Height; i++) {
 		for (j = 1; j < m_Width; j++) {
 			int A = *(YBuf + (i)*m_Width + j - 1);
@@ -289,7 +289,7 @@ void ImageProcess::getDiffVideo() {
 	}
 }
 
-void ImageProcess::getCorrelation() {
+void ImageProcess::GetCorrelation() {
 	for (i = 1; i < m_Height; i++) {
 		for (j = 0; j < m_Width; j++) {
 			double rightPix = *(YBuf + i * m_Width + j) / 255.0;
@@ -311,6 +311,53 @@ void ImageProcess::getCorrelation() {
 			}
 
 			*(OutBuf + i * m_Width + j) = int(result);
+		}
+	}
+}
+
+void ImageProcess::GetDiffVideoWith2Image(BYTE* YBuf2) {
+
+	for (i = 0; i < m_Width; i++) {
+		for (j = 0; j < m_Height; j++) {
+		
+			int result = *(YBuf + i * m_Width + j) - *(YBuf2 + i * m_Width + j);	
+			if (result < 0) { result = -result; }
+
+			*(OutBuf + i * m_Width + j) = (BYTE)result;
+		}
+	}
+}
+
+void ImageProcess::InputWatermark(BYTE* YBuf2) {
+	for (i = 0; i < m_Width; i++) {
+		for (j = 0; j < m_Height; j++) {
+			int curWatermark = *(YBuf2 + i * m_Width + j);
+			if (curWatermark >= 128) {
+				*(YBuf2 + i * m_Width + j) = 255;
+			}
+
+			else {
+				*(YBuf2 + i * m_Width + j) = 0;
+			}
+
+			curWatermark = *(YBuf + i * m_Width + j);
+			curWatermark = curWatermark & 0x7f; //in light case, curWatermark&0xFE;
+			curWatermark = curWatermark + (unsigned char)(*(YBuf2 + i * m_Width + j) / 255 * 128); //in light case, do /255.
+			*(OutBuf + i * m_Width + j) = curWatermark;
+		}
+	}
+}
+
+void ImageProcess::ExtractWatermark() {
+	for (i = 0; i < m_Width; i++) {
+		for (j = 0; j < m_Height; j++) {
+			int curWatermark = *(OutBuf + i * m_Width + j);
+			curWatermark = (curWatermark & 0x80); //in light case, curWatermark&0x01 * 255
+			if (curWatermark > 50) {
+				curWatermark = 255;
+			}
+
+			*(OutBuf + i * m_Width + j) = curWatermark;
 		}
 	}
 }
