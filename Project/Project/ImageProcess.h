@@ -26,5 +26,5 @@ public :
 	void ConvEmbossing();
 	void ConvSobelEdge(int edgePoint);
 	void CalFilter3by3(int filter[3][3]);
-
+	void BinaryByHistogram(double binaryBoundary);
 };

@@ -37,7 +37,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	ip.SetImageProcess(CyBuf, CbBuf, CrBuf, YBuf, RBuf, GBuf, BBuf, OutBuf, RGBBuf, IpImg, m_Width, m_Height);
 	ip.RGB2GrayScale();
 
-	SelectImageProcessingMethod(20); // Change This Number To Select Method
+	SelectImageProcessingMethod(22); // Change This Number To Select Method
 	getOutputImage(false, false); // False : GrayScale True : RGB / True : Save
 	
 	delete[]IpImg, YBuf, RBuf, GBuf, OutBuf, CrBuf, CbBuf, CyBuf;
@@ -48,7 +48,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 }
 
 void getOutputImage(boolean isRGB, boolean doSave) {
-	const char * outputName = "10_SobelEdgeDetect150.bmp";
+	const char * outputName = "22_histogramBinary150.bmp";
 
 	if (doSave) {
 		if (isRGB) {
@@ -92,18 +92,26 @@ void SelectImageProcessingMethod(int select) {
 	case 7:
 		ip.ConvGradient(1); break;
 
-	case 8 :
+	case 8:
 		ip.ConvHighPass(); break;
 
 	case 9:
 		ip.ConvEmbossing(); break;
 
-	case 10 :
+	case 10:
 		ip.ConvSobelEdge(150); break;
 
-	/* upper 20 is Theory Range */
+	case 11:
+		ip.BinaryByHistogram(0.01); break;
+
+		/* upper 20 is Theory Range */
 	case 20:
 		NNI(2.7); break;
-	}
 
+	case 21:
+		Gonzzalez_Woods(m_Height, m_Width, YBuf); break;
+
+	case 22:
+		getStandardDevation(); break;
+	}
 }

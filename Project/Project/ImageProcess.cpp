@@ -237,3 +237,31 @@ void ImageProcess::CalFilter3by3(int filter[3][3]) {
 		}
 	}
 }
+
+void ImageProcess::BinaryByHistogram(double binaryBoundary) {
+	double hist[256];
+	BYTE current;
+	for (i = 0; i < 256; i++) hist[i] = 0;
+
+	for (i = 0; i < m_Width * m_Height; i++) {
+		current = *(YBuf + i);
+		hist[current] += 1;
+	}
+
+	for (i = 0; i < 256; i++) {
+		hist[i] = hist[i] / (m_Width * m_Height);
+		printf("%f\n", hist[i]);
+	}
+
+
+	for (i = 0; i < m_Height; i++) {
+		for (j = 0; j < m_Width; j++) {
+			current = *(YBuf + i * m_Width + j);
+			if (hist[current] > binaryBoundary)
+				current = (BYTE)255;
+			else current = (BYTE)0;
+
+			*(OutBuf + i * m_Width + j) = (BYTE)current;
+		}
+	}
+}
