@@ -23,9 +23,9 @@ int _tmain(int argc, _TCHAR* argv[]) {
 
 	initializeVariables();
 	
-	targetName = "IRIS_RGB.bmp";
+	targetName = "InputImages/IRIS_RGB.bmp";
 	getInputImage(targetName, RGBBuf, RBuf, GBuf, BBuf, YBuf);
-	targetName = "watermark_horse.bmp";
+	targetName = "InputImages/watermark_horse.bmp";
 	getInputImage(targetName, RGBBuf2, RBuf2, GBuf2, BBuf2, YBuf2);
 
 	ip.SetImageProcess(CyBuf, CbBuf, CrBuf, YBuf, RBuf, GBuf, BBuf, OutBuf, RGBBuf, IpImg, m_Width, m_Height);
@@ -78,7 +78,7 @@ void getInputImage(const char * targetName, BYTE * inputBuf, BYTE * inputR, BYTE
 }
 
 void getOutputImage(boolean isRGB, boolean doSave) {
-	const char * outputName = "17_getIrisEdge.bmp";
+	const char * outputName = "resultImages/17_getIrisEdge.bmp";
 
 	if (doSave) {
 		if (isRGB) {
