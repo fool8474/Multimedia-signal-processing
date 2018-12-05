@@ -64,10 +64,10 @@ void ImageProcess::ContrastChange(double changeNum) {
 			currentY = *(YBuf + i * m_Width + j);
 			changedY = currentY * changeNum;
 
-			if (changedY > 255) changedY = 255;
-			if (changedY < 0) changedY = 0;
+if (changedY > 255) changedY = 255;
+if (changedY < 0) changedY = 0;
 
-			*(OutBuf + i * m_Width + j) = (BYTE)changedY;
+*(OutBuf + i * m_Width + j) = (BYTE)changedY;
 		}
 	}
 }
@@ -97,10 +97,10 @@ void ImageProcess::ChangeColorInRange(int xStartPoint, int xEndPoint, int yStart
 void ImageProcess::MosaicImage(int mosaicSize) {
 	int sum = 0;
 
-	for (i = 0; i < m_Height; i+=mosaicSize) {
-		for (j = 0; j < m_Width; j+=mosaicSize) {
+	for (i = 0; i < m_Height; i += mosaicSize) {
+		for (j = 0; j < m_Width; j += mosaicSize) {
 			for (k = i; k < i + mosaicSize; k++) {
-				for (l = j; l < j + mosaicSize; l++){
+				for (l = j; l < j + mosaicSize; l++) {
 					sum += *(YBuf + k * m_Width + l);
 					//printf("%d", &sum);
 				}
@@ -136,6 +136,53 @@ void ImageProcess::ToYCbCr() {
 			*(CbBuf + i * m_Width + j) = (BYTE)cbf;
 			crf = (0.500*r) + (-0.4187*g) + 128 + (-0.0813 * b) + 128;
 			*(CrBuf + i * m_Width + j) = (BYTE)crf;
+		}
+	}
+}
+
+void ImageProcess::ConvGradient(double changeNum) {
+	BYTE rightMask, leftMask;
+	int gradient;
+
+	for (i = 0; i < m_Height - 1; i++) {
+		for (j = 0; j < m_Width; j++) {
+			rightMask = *(YBuf + i * m_Width + j + 1);
+			leftMask = *(YBuf + i * m_Width + j);
+
+			gradient = 1 * rightMask + (-1) * leftMask;
+			gradient = abs(gradient) * 2;
+
+			if (gradient > 255)
+				gradient = 255;
+
+			*(OutBuf + i * m_Width + j + 1) = abs(gradient);
+		}
+	}
+}
+
+void ImageProcess::ConvHighPass() {
+	int HighPass[3][3] = { {-1,-1,-1},{-1,9,-1},{-1,-1,-1} };
+	int result;
+
+	for (i = 1; i < m_Height - 1; i++){
+		for (j = 1; j < m_Width - 1; j++) {
+
+			result = 0;
+
+			for (k = -1; k <= 1; k++) {
+				for (l = -1; l <= 1; l++) {
+					result += *(YBuf + (i + k)*m_Width + (j + l)) * HighPass[k + 1][l + 1];
+				}
+			}
+
+			if (result > 255)
+				result = 255;
+
+			else if (result < 0)
+				result = 0;
+
+			*(OutBuf + i * m_Width + j) = result;
+
 		}
 	}
 }

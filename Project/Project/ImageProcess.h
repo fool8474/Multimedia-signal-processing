@@ -21,4 +21,6 @@ public :
 	void ChangeColorInRange(int xStartPoint, int xEndPoint, int yStartPoint, int yEndPoint, BYTE R, BYTE G, BYTE B);
 	void MosaicImage(int mosaicSize);
 	void ToYCbCr();
+	void ConvGradient(double changeNum);
+	void ConvHighPass();
 };

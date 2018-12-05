@@ -12,9 +12,9 @@ ImageProcess ip;
 
 
 void SelectImageProcessingMethod(int select);
+void getOutputImage(boolean isRGB);
 
 int _tmain(int argc, _TCHAR* argv[]) {
-	int i, j, k, l;
 
 	IpImg  = new BYTE[m_Width * m_Height * 3];
 	RGBBuf = new BYTE[m_Width * m_Height * 3];
@@ -36,8 +36,8 @@ int _tmain(int argc, _TCHAR* argv[]) {
 	ip.SetImageProcess(CyBuf, CbBuf, CrBuf, YBuf, RBuf, GBuf, BBuf, OutBuf, RGBBuf, IpImg, m_Width, m_Height);
 	ip.RGB2GrayScale();
 
-	SelectImageProcessingMethod(6);
-	getOutputImage(FALSE);
+	SelectImageProcessingMethod(8);
+	getOutputImage(false);
 	
 	delete[]IpImg, YBuf, RBuf, GBuf, OutBuf, CrBuf, CbBuf, CyBuf;
 
@@ -45,7 +45,7 @@ int _tmain(int argc, _TCHAR* argv[]) {
 }
 
 void getOutputImage(boolean isRGB) {
-	const char * outputName = "06_cyColor.bmp";
+	const char * outputName = "08_convHighPass.bmp";
 
 	if (isRGB) {
 		Y2RGB(YBuf, IpImg, m_Width, m_Height);
@@ -76,15 +76,18 @@ void SelectImageProcessingMethod(int select) {
 		ip.ToBinaryImage(150); break;
 
 	case 4:
-		ip.ChangeColorInRange(80, 500, 400, 600, 255, 120, 120);
-		break;
+		ip.ChangeColorInRange(80, 500, 400, 600, 255, 120, 120); break;
 
 	case 5:
-		ip.MosaicImage(30);
-		break;
+		ip.MosaicImage(30); break;
 
 	case 6:
-		ip.ToYCbCr();
-		break;
+		ip.ToYCbCr(); break;
+
+	case 7:
+		ip.ConvGradient(1); break;
+
+	case 8 :
+		ip.ConvHighPass(); break;
 	}
 }
